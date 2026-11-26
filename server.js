@@ -103,7 +103,9 @@ function detectEmergency(text) {
     'bairro',
     'regiao',
     'fora do ar',
-    'passando mal',
+    'outro paciente',
+    'dados de outro',
+    'erro no laudo',
     'emergencia',
     'urgente',
     'fraude',
@@ -172,13 +174,13 @@ function inferSector(tenant, text) {
     return 'Suporte Técnico';
   }
   if (tenant.id === 'clinica') {
-    if (norm.includes('passando mal') || norm.includes('jejum') || norm.includes('preparo') || norm.includes('enfermagem') || norm.includes('dor')) {
-      return 'Enfermagem / Triagem';
+    if (norm.includes('jejum') || norm.includes('preparo') || norm.includes('enfermagem') || norm.includes('medicacao')) {
+      return 'Triagem / Enfermagem';
     }
-    if (norm.includes('boleto') || norm.includes('pagamento') || norm.includes('nota') || norm.includes('convenio') || norm.includes('valor')) {
+    if (norm.includes('boleto') || norm.includes('pagamento') || norm.includes('nota') || norm.includes('convenio') || norm.includes('valor') || norm.includes('cobranca')) {
       return 'Financeiro';
     }
-    return 'Recepção';
+    return 'Recepção Digital';
   }
   if (tenant.id === 'veloce') {
     if (norm.includes('defeito') || norm.includes('amassada') || norm.includes('nao liga') || norm.includes('troca') || norm.includes('garantia')) {
@@ -553,28 +555,28 @@ function seedDemoTickets(tenantId) {
     ],
     clinica: [
       {
-        titulo: 'Paciente com mal-estar na recepção',
-        setor: 'Enfermagem / Triagem',
+        titulo: 'Laudo liberado com dados de outro paciente',
+        setor: 'Recepção Digital',
         prioridade: 'Alta',
-        solicitante: 'Recepção Bloco A',
-        local_ou_servico: 'Sala de Espera Principal',
-        resumo_tecnico: 'Paciente relata tontura e pressão baixa aguardando coleta; atendimento imediato.'
+        solicitante: 'Ana Paula Mendes',
+        local_ou_servico: 'Protocolo #CV-9042 — Hemograma',
+        resumo_tecnico: 'Paciente abriu o resultado no portal e identificou divergência de dados no PDF; bloqueio imediato do link.'
       },
       {
-        titulo: 'Dúvida sobre jejum de exame hormonal',
-        setor: 'Enfermagem / Triagem',
+        titulo: 'Dúvida sobre jejum e medicação contínua',
+        setor: 'Triagem / Enfermagem',
         prioridade: 'Media',
         solicitante: 'Fernanda Lima',
         local_ou_servico: 'Exame Cortisol — Amanhã 08h',
         resumo_tecnico: 'Paciente precisa confirmar se pode tomar medicação contínua antes da coleta.'
       },
       {
-        titulo: 'Solicitação de nota fiscal para reembolso',
+        titulo: 'Solicitação de ajuste no recibo do convênio',
         setor: 'Financeiro',
         prioridade: 'Baixa',
         solicitante: 'Roberto Alves',
-        local_ou_servico: 'Consulta Cardiologia',
-        resumo_tecnico: 'Solicita segunda via de nota fiscal discriminada para envio ao plano.'
+        local_ou_servico: 'Consulta Cardiologia — Telemedicina',
+        resumo_tecnico: 'Solicita correção do CNPJ do plano de saúde na nota fiscal emitida.'
       }
     ],
     veloce: [
