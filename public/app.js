@@ -9,7 +9,6 @@ function createSessionId() {
 }
 
 const el = {
-  engineBadge: document.getElementById('engineBadge'),
   tenantTabs: document.getElementById('tenantTabs'),
   tenantInfo: document.getElementById('tenantInfo'),
   waAvatar: document.getElementById('waAvatar'),
@@ -48,14 +47,6 @@ async function init() {
   const res = await fetch('/api/tenants');
   const data = await res.json();
   tenants = data.tenants;
-
-  if (data.mode === 'gemini') {
-    el.engineBadge.textContent = `IA: Gemini (${data.model})`;
-  } else if (data.mode === 'groq') {
-    el.engineBadge.textContent = 'IA: Groq (Llama 3.3)';
-  } else {
-    el.engineBadge.textContent = 'IA: Contingência Local';
-  }
 
   renderTenantTabs();
   selectTenant(tenants[0].id);

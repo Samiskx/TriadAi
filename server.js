@@ -136,6 +136,30 @@ function detectTicketResolution(text) {
   return terms.some((t) => norm.includes(normalize(t)));
 }
 
+function detectOutOfContext(text) {
+  const norm = normalize(text);
+  const offTopicTerms = [
+    'receita de bolo',
+    'futebol',
+    'flamengo',
+    'palmeiras',
+    'corinthians',
+    'politica',
+    'eleicao',
+    'presidente',
+    'piada',
+    'me conte uma historia',
+    'poema',
+    'codigo em python',
+    'javascript',
+    'previsao do tempo',
+    'clima hoje',
+    'quem ganhou',
+    'capital da franca'
+  ];
+  return offTopicTerms.some((t) => norm.includes(t));
+}
+
 function inferSector(tenant, text) {
   const norm = normalize(text);
   if (tenant.id === 'l3telecom') {
@@ -254,6 +278,16 @@ function runLocalEngine(tenant, session, message) {
     };
   }
 
+  if (detectOutOfContext(message) && session.qualification_turns === 0) {
+    return {
+      resposta_usuario: `Sou o assistente de atendimento da **${tenant.name}** (${tenant.segment}). Só posso ajudar com dúvidas e chamados relacionados aos nossos serviços (${tenant.sectors.join(', ')}). Como posso te ajudar com a ${tenant.name} hoje?`,
+      acao: 'continuar_chat',
+      fonte_faq: null,
+      fez_pergunta_qualificacao: false,
+      ticket: { abrir: false }
+    };
+  }
+
   if (norm.includes('humano') || norm.includes('atendente') || norm.includes('pessoa')) {
     if (session.qualification_turns >= 1) {
       const ticket = buildTicketSummary(tenant, session, 'Media', message);
@@ -356,13 +390,14 @@ METADADOS DA SESSÃO:
 - Campo de contexto deste cliente: "${tenant.contextLabel}"
 
 REGRAS:
-1. Nunca invente informações fora da FAQ. Se não estiver na FAQ, qualifique para abrir chamado.
-2. Se estiver na FAQ: responda com passos claros, termine perguntando "Esse procedimento resolveu o seu problema?" e retorne "acao": "propor_faq".
-3. Para abrir chamado: colete problema exato, solicitante e o campo "${tenant.contextLabel}" em no máximo 2 turnos ("acao": "continuar_chat", "fez_pergunta_qualificacao": true).
-4. PERGUNTAR CONFORME O CONTEXTO (INCLUSIVE EM EMERGÊNCIAS): Mesmo em casos graves (ex.: "caiu a internet do bairro todo", "rompeu cabo", "fraude"), se o cliente ainda NÃO informou o local/bairro/endereço exato ou quem é o solicitante, faça 1 pergunta rápida e objetiva para coletar esses dados essenciais antes de abrir o chamado. Só abra direto se o cliente já tiver informado tudo na mesma mensagem.
-5. ANTI-LOOP: Se qualification_turns >= 2, abra o chamado imediatamente ("acao": "abrir_ticket").
-6. PRIORIDADE ALTA: Queda total, problema em todo o bairro/região, fraude, cobrança dupla, risco físico ou urgência crítica devem ser abertos com prioridade "Alta".
-7. DUPLICIDADE E CONCLUSÃO: Se ticket_locked for true e o cliente avisar que já resolveu, que voltou a funcionar ou pedir para cancelar/fechar o chamado, retorne "acao": "concluir_ticket" para encerrar o chamado ativo. Caso contrário, não abra outro ticket.
+1. FOCO ESTRITO NO CONTEXTO DO CLIENTE: Você atende EXCLUSIVAMENTE assuntos ligados à empresa "${tenant.name}" (${tenant.segment}) e aos seus setores (${tenant.sectors.join(', ')}). Se o usuário perguntar algo fora desse contexto (ex.: receitas, futebol, piadas, programação, assuntos gerais ou pessoais), NÃO responda ao assunto fora de escopo e NÃO abra chamado; recuse educadamente dizendo que só atende questões da "${tenant.name}" e pergunte como ajudar dentro desse atendimento ("acao": "continuar_chat", "fez_pergunta_qualificacao": false).
+2. Nunca invente informações fora da FAQ. Se não estiver na FAQ (e for assunto da empresa), qualifique para abrir chamado.
+3. Se estiver na FAQ: responda com passos claros, termine perguntando "Esse procedimento resolveu o seu problema?" e retorne "acao": "propor_faq".
+4. Para abrir chamado: colete problema exato, solicitante e o campo "${tenant.contextLabel}" em no máximo 2 turnos ("acao": "continuar_chat", "fez_pergunta_qualificacao": true).
+5. PERGUNTAR CONFORME O CONTEXTO (INCLUSIVE EM EMERGÊNCIAS): Mesmo em casos graves (ex.: "caiu a internet do bairro todo", "rompeu cabo", "fraude"), se o cliente ainda NÃO informou o local/bairro/endereço exato ou quem é o solicitante, faça 1 pergunta rápida e objetiva para coletar esses dados essenciais antes de abrir o chamado. Só abra direto se o cliente já tiver informado tudo na mesma mensagem.
+6. ANTI-LOOP: Se qualification_turns >= 2, abra o chamado imediatamente ("acao": "abrir_ticket").
+7. PRIORIDADE ALTA: Queda total, problema em todo o bairro/região, fraude, cobrança dupla, risco físico ou urgência crítica devem ser abertos com prioridade "Alta".
+8. DUPLICIDADE E CONCLUSÃO: Se ticket_locked for true e o cliente avisar que já resolveu, que voltou a funcionar ou pedir para cancelar/fechar o chamado, retorne "acao": "concluir_ticket" para encerrar o chamado ativo. Caso contrário, não abra outro ticket.
 
 Responda APENAS em JSON válido:
 {
