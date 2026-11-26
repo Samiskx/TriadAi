@@ -23,6 +23,11 @@ const el = {
   newChatBtn: document.getElementById('newChatBtn'),
   resetDemoBtn: document.getElementById('resetDemoBtn'),
   seedBtn: document.getElementById('seedBtn'),
+  faqBtn: document.getElementById('faqBtn'),
+  faqModal: document.getElementById('faqModal'),
+  faqModalTitle: document.getElementById('faqModalTitle'),
+  faqModalBody: document.getElementById('faqModalBody'),
+  closeFaqBtn: document.getElementById('closeFaqBtn'),
   kpiDeflected: document.getElementById('kpiDeflected'),
   kpiDeflectionPct: document.getElementById('kpiDeflectionPct'),
   kpiTickets: document.getElementById('kpiTickets'),
@@ -59,6 +64,14 @@ async function init() {
   el.newChatBtn.addEventListener('click', startNewConversation);
   el.resetDemoBtn.addEventListener('click', resetTenantDemo);
   el.seedBtn.addEventListener('click', seedQueue);
+  el.faqBtn.addEventListener('click', openFaqModal);
+  el.closeFaqBtn.addEventListener('click', () => el.faqModal.classList.add('hidden'));
+  el.faqModal.addEventListener('click', (e) => {
+    if (e.target === el.faqModal) el.faqModal.classList.add('hidden');
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') el.faqModal.classList.add('hidden');
+  });
 
   document.querySelectorAll('.filter-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -404,6 +417,26 @@ function renderTickets(tickets) {
 
     el.ticketsFeed.appendChild(card);
   });
+}
+
+function openFaqModal() {
+  if (!activeTenant) return;
+  el.faqModalTitle.textContent = `Base de Conhecimento — ${activeTenant.name}`;
+  el.faqModalBody.innerHTML = '';
+  (activeTenant.faq || []).forEach((item) => {
+    const card = document.createElement('div');
+    card.className = 'faq-item';
+    const cleanAnswer = item.answer.replace(/\n\nEsse procedimento resolveu o seu problema\?$/i, '');
+    card.innerHTML = `
+      <div class="faq-item-head">
+        <strong>${item.title}</strong>
+        <span class="sector-pill">${item.sector}</span>
+      </div>
+      <p>${cleanAnswer}</p>
+    `;
+    el.faqModalBody.appendChild(card);
+  });
+  el.faqModal.classList.remove('hidden');
 }
 
 async function resetTenantDemo() {

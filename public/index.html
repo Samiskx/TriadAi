@@ -87,6 +87,7 @@
             </p>
           </div>
           <div class="demo-actions">
+            <button id="faqBtn" class="btn-soft">Ver FAQ do cenário</button>
             <button id="seedBtn" class="btn-soft">Simular fila cheia</button>
             <button id="resetDemoBtn" class="btn-outline-sm">Limpar tudo</button>
           </div>
@@ -228,6 +229,20 @@
       <span>26 de novembro de 2026</span>
     </div>
   </footer>
+
+  <!-- FAQ Modal -->
+  <div id="faqModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow" style="margin-bottom:4px;display:block;">BASE OFICIAL DO CLIENTE</span>
+          <h3 id="faqModalTitle">FAQ</h3>
+        </div>
+        <button id="closeFaqBtn" class="modal-close" aria-label="Fechar">×</button>
+      </div>
+      <div id="faqModalBody" class="modal-body"></div>
+    </div>
+  </div>
 
   <script src="/app.js"></script>
 </body>

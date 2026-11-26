@@ -659,7 +659,8 @@ const server = http.createServer(async (req, res) => {
         channelMode: t.channelMode,
         contextLabel: t.contextLabel,
         sectors: t.sectors,
-        quickPrompts: t.quickPrompts
+        quickPrompts: t.quickPrompts,
+        faq: t.faq.map((f) => ({ title: f.title, sector: f.sector, answer: f.answer }))
       }));
       return sendJson(res, 200, {
         mode: activeMode,
