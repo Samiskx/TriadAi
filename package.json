@@ -1,0 +1,9 @@
+{
+  "name": "triadai-mvp",
+  "version": "1.0.0",
+  "description": "TriadAI - Camada inteligente de triagem, deflexão e priorização de suporte",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TriadAI — Triagem Inteligente entre Cliente e Suporte</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <img src="/logo.png" alt="TriadAI" class="brand-logo" />
+        <span class="brand-pill">SERVIÇO DE IA · TRIAGEM E PRIORIZAÇÃO</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#demo">Demonstração</a>
+        <a href="#canais">Canais</a>
+        <span id="engineBadge" class="engine-badge">Conectando...</span>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-layout">
+        <div class="hero-copy">
+          <div class="eyebrow">CAMADA INTELIGENTE ENTRE CLIENTE E SUPORTE</div>
+          <h1>Triagem inteligente.<br /><em>Suporte sem fila.</em></h1>
+          <p class="hero-desc">
+            A <strong>TriadAI</strong> atua diretamente nos <strong>canais que a empresa já tem</strong>
+            (como WhatsApp e chat de atendimento) ou em um <strong>canal próprio personalizado</strong> criado sob medida.
+            Ela resolve dúvidas repetitivas na hora e organiza os problemas reais por
+            <strong>prioridade</strong> e <strong>setor</strong>.
+          </p>
+          <div class="hero-cta">
+            <a href="#demo" class="btn-primary">Abrir Demonstração ao Vivo</a>
+            <a href="#canais" class="btn-outline">Como integramos</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="flow-card">
+            <div class="flow-card-head">
+              <span class="dot red"></span><span class="dot amber"></span><span class="dot green"></span>
+              <span class="flow-card-title">O que a TriadAI faz em cada atendimento</span>
+            </div>
+            <div class="flow-item">
+              <div class="flow-icon">01</div>
+              <div>
+                <strong>Filtra o repetitivo na hora</strong>
+                <p>2ª via de boleto, senha, rastreio ou horários são resolvidos sem acionar nenhum atendente.</p>
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-icon">02</div>
+              <div>
+                <strong>Qualifica relatos vagos</strong>
+                <p>Quando falta contexto, a IA faz poucas perguntas diretas para montar um resumo técnico completo.</p>
+              </div>
+            </div>
+            <div class="flow-item">
+              <div class="flow-icon">03</div>
+              <div>
+                <strong>Organiza por prioridade e setor</strong>
+                <p>Emergências sobem para o topo (Alta) e cada chamado cai na fila certa do cliente.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Interactive Demo -->
+    <section id="demo" class="demo-section">
+      <div class="container">
+        <div class="demo-top">
+          <div>
+            <div class="eyebrow">DEMONSTRAÇÃO INTERATIVA AO VIVO</div>
+            <h2>Teste o fluxo entre Cliente e Suporte</h2>
+            <p class="demo-sub">
+              Escolha uma empresa abaixo para ver os setores, a base de respostas e o canal se adaptarem em tempo real.
+            </p>
+          </div>
+          <div class="demo-actions">
+            <button id="seedBtn" class="btn-soft">Simular fila cheia</button>
+            <button id="resetDemoBtn" class="btn-outline-sm">Limpar tudo</button>
+          </div>
+        </div>
+
+        <!-- Tenant Switcher -->
+        <div class="tenant-bar">
+          <div id="tenantTabs" class="tenant-tabs"></div>
+          <div id="tenantInfo" class="tenant-info"></div>
+        </div>
+
+        <!-- Live Pipeline Visualizer -->
+        <div class="pipeline" id="pipelineBar">
+          <div class="pipe-step active" data-step="1">
+            <span class="pipe-num">1</span>
+            <span>Mensagem no canal</span>
+          </div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step" data-step="2">
+            <span class="pipe-num">2</span>
+            <span>IA analisa base e contexto</span>
+          </div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step" data-step="3">
+            <span class="pipe-num">3</span>
+            <span id="pipeStep3Text">Deflexão ou Triagem</span>
+          </div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipe-step" data-step="4">
+            <span class="pipe-num">4</span>
+            <span>Fila priorizada do suporte</span>
+          </div>
+        </div>
+
+        <!-- Split Workspace -->
+        <div class="workspace">
+          <!-- Left: Customer Channel -->
+          <div class="panel phone-panel">
+            <div class="wa-header">
+              <div class="wa-avatar" id="waAvatar">L3</div>
+              <div class="wa-meta">
+                <div id="waChannelName" class="wa-name">L3 Telecom · Atendimento</div>
+                <div id="waChannelMode" class="wa-status">Integrado ao WhatsApp oficial</div>
+              </div>
+              <button id="newChatBtn" class="wa-reset-btn">Nova conversa</button>
+            </div>
+
+            <div class="quick-bar">
+              <span class="quick-title">Cenários prontos para testar:</span>
+              <div id="quickPrompts" class="quick-prompts"></div>
+            </div>
+
+            <div id="chatMessages" class="chat-messages"></div>
+
+            <form id="chatForm" class="chat-form">
+              <input
+                id="chatInput"
+                type="text"
+                placeholder="Escreva como se fosse o cliente..."
+                autocomplete="off"
+                required
+              />
+              <button id="sendBtn" type="submit" class="send-btn">Enviar</button>
+            </form>
+          </div>
+
+          <!-- Right: Support Team Queue -->
+          <div class="panel support-panel">
+            <div class="support-head">
+              <div>
+                <h3>Painel da Equipe de Suporte</h3>
+                <p>Ordenado automaticamente por prioridade: <strong>Alta → Média → Baixa</strong></p>
+              </div>
+            </div>
+
+            <div class="kpi-row">
+              <div class="kpi-box">
+                <span>Chamados Evitados</span>
+                <div class="kpi-num">
+                  <strong id="kpiDeflected">0</strong>
+                  <em id="kpiDeflectionPct">0%</em>
+                </div>
+              </div>
+              <div class="kpi-box">
+                <span>Na Fila (Organizados)</span>
+                <div class="kpi-num">
+                  <strong id="kpiTickets">0</strong>
+                </div>
+              </div>
+              <div class="kpi-box">
+                <span>Tempo Poupado</span>
+                <div class="kpi-num">
+                  <strong id="kpiMinutes">0 min</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="filter-row">
+              <button class="filter-btn active" data-priority="ALL">Todos</button>
+              <button class="filter-btn" data-priority="Alta">Alta</button>
+              <button class="filter-btn" data-priority="Media">Média</button>
+              <button class="filter-btn" data-priority="Baixa">Baixa</button>
+            </div>
+
+            <div id="ticketsFeed" class="tickets-feed"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Channels & Customization -->
+    <section id="canais" class="channels-section">
+      <div class="container">
+        <div class="eyebrow">FLEXIBILIDADE DE IMPLANTAÇÃO</div>
+        <h2>Nos canais que você já usa — ou em um canal próprio</h2>
+        <div class="channels-grid">
+          <div class="channel-card">
+            <span class="ch-tag">OPÇÃO 01</span>
+            <h3>Integrada aos canais existentes</h3>
+            <p>
+              Conectamos a TriadAI diretamente ao <strong>WhatsApp</strong>, chat do site ou sistema de chamados que a empresa já utiliza no dia a dia. O cliente continua falando onde já está acostumado.
+            </p>
+          </div>
+          <div class="channel-card">
+            <span class="ch-tag">OPÇÃO 02</span>
+            <h3>Canal personalizado próprio da empresa</h3>
+            <p>
+              Para empresas que ainda não têm um canal estruturado, criamos um <strong>canal de atendimento exclusivo e personalizado</strong> com a identidade visual, setores e regras do cliente.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>TriadAI · Ferramentas de I.A e Chatbot · Savyo Vyctor &amp; Thiago Neiva</span>
+      <span>26 de novembro de 2026</span>
+    </div>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
